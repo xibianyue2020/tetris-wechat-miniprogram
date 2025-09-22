@@ -1,0 +1,80 @@
+{
+  "description": "俄罗斯方块抖音小游戏",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".git"
+      },
+      {
+        "type": "suffix",
+        "value": ".md"
+      },
+      {
+        "type": "file",
+        "value": "verify_project.sh"
+      }
+    ]
+  },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": true,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "uglifyFileName": true,
+    "uploadWithSourceMap": true,
+    "useCompilerPlugins": false,
+    "userConfirmedUseCompilerPlugins": false,
+    "showES6CompileOption": false,
+    "enableEngineNative": false,
+    "useIsolateContext": true,
+    "useMultiFrameRuntime": false,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "useCompileHotReLoad": false,
+    "useDynamicLib": false
+  },
+  "compileType": "miniprogram",
+  "libVersion": "2.12.1",
+  "appid": "touristappid",
+  "projectname": "eluosifangkuai",
+  "debugOptions": {
+    "hidedInDevtools": []
+  },
+  "isGameTourist": true,
+  "gameType": "miniGame",
+  "simulatorType": "wechat",
+  "simulatorPluginLibVersion": {},
+  "condition": {
+    "search": {
+      "current": -1,
+      "list": []
+    },
+    "conversation": {
+      "current": -1,
+      "list": []
+    },
+    "game": {
+      "current": -1,
+      "list": []
+    },
+    "miniprogram": {
+      "current": 0,
+      "list": [
+        {
+          "id": -1,
+          "name": "index",
+          "pathName": "pages/index/index",
+          "query": ""
+        }
+      ]
+    }
+  }
+}
