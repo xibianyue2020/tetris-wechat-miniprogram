@@ -1,0 +1,144 @@
+<!-- pages/index/index.wxml -->
+<view class="container" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
+  <!-- 游戏标题 -->
+  <view class="title">俄罗斯方块</view>
+  
+  <!-- 游戏信息面板 -->
+  <view class="game-info">
+    <view class="info-item">
+      <text class="info-label">分数</text>
+      <text class="info-value">{{score}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">等级</text>
+      <text class="info-value">{{level}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">行数</text>
+      <text class="info-value">{{lines}}</text>
+    </view>
+  </view>
+  
+  <!-- 游戏主区域 -->
+  <view class="game-main">
+    <!-- 游戏区域 -->
+    <view class="game-area" 
+          style="width: {{screenInfo.gameAreaWidth}}px; height: {{screenInfo.gameAreaHeight}}px; margin-left: {{screenInfo.gameAreaX}}px; margin-top: {{screenInfo.gameAreaY}}px;">
+      <!-- 游戏网格背景 -->
+      <view class="game-grid">
+        <block wx:for="{{20}}" wx:key="y" wx:for-item="row">
+          <block wx:for="{{10}}" wx:key="x" wx:for-item="col">
+            <view class="grid-cell" 
+                  style="width: {{screenInfo.gridSize}}px; height: {{screenInfo.gridSize}}px; left: {{item * screenInfo.gridSize}}px; top: {{index * screenInfo.gridSize}}px;">
+            </view>
+          </block>
+        </block>
+      </view>
+      
+      <!-- 已固定的方块 -->
+      <view class="fixed-blocks">
+        <block wx:for="{{gameMap}}" wx:key="y" wx:for-item="row">
+          <block wx:for="{{row}}" wx:key="x" wx:if="{{item}}">
+            <view class="block" 
+                  style="width: {{screenInfo.gridSize - 2}}px; height: {{screenInfo.gridSize - 2}}px; left: {{item * screenInfo.gridSize + 1}}px; top: {{index * screenInfo.gridSize + 1}}px; background-color: {{item}};">
+            </view>
+          </block>
+        </block>
+      </view>
+      
+      <!-- 当前移动的方块 -->
+      <view class="current-tetromino" wx:if="{{currentTetromino}}">
+        <block wx:for="{{currentTetromino.shape}}" wx:key="y" wx:for-item="row">
+          <block wx:for="{{row}}" wx:key="x" wx:if="{{item}}">
+            <view class="block" 
+                  style="width: {{screenInfo.gridSize - 2}}px; height: {{screenInfo.gridSize - 2}}px; left: {{(currentTetromino.x + item) * screenInfo.gridSize + 1}}px; top: {{(currentTetromino.y + index) * screenInfo.gridSize + 1}}px; background-color: {{currentTetromino.color}};">
+            </view>
+          </block>
+        </block>
+      </view>
+    </view>
+    
+    <!-- 游戏信息侧边栏 -->
+    <view class="game-sidebar" style="margin-left: 20rpx;">
+      <!-- 下一个方块预览 -->
+      <view class="next-tetromino-preview">
+        <view class="preview-title">下一个</view>
+        <view class="preview-area">
+          <block wx:if="{{nextTetromino}}">
+            <block wx:for="{{nextTetromino.shape}}" wx:key="y" wx:for-item="row">
+              <block wx:for="{{row}}" wx:key="x" wx:if="{{item}}">
+                <view class="preview-block" 
+                      style="background-color: {{nextTetromino.color}};">
+                </view>
+              </block>
+            </block>
+          </block>
+        </view>
+      </view>
+      
+      <!-- 游戏控制按钮 -->
+      <view class="game-controls">
+        <button wx:if="{{!gameStarted || gameOver}}" 
+                class="control-button start-button" 
+                bindtap="onButtonTap" 
+                data-id="start">
+          {{gameOver ? '重新开始' : '开始游戏'}}
+        </button>
+        
+        <button wx:elif="{{gameStarted && !gameOver}}" 
+                class="control-button pause-button" 
+                bindtap="onButtonTap" 
+                data-id="pause">
+          {{gamePaused ? '继续游戏' : '暂停游戏'}}
+        </button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 游戏操作按钮 -->
+  <view class="game-actions">
+    <!-- 旋转按钮 -->
+    <view class="action-row">
+      <view class="action-button" bindtap="onButtonTap" data-id="rotate">
+        <text class="action-text">旋转</text>
+      </view>
+    </view>
+    
+    <!-- 移动按钮 -->
+    <view class="action-row">
+      <view class="action-button" bindtap="onButtonTap" data-id="left">
+        <text class="action-text">←</text>
+      </view>
+      <view class="action-button" bindtap="onButtonTap" data-id="down">
+        <text class="action-text">↓</text>
+      </view>
+      <view class="action-button" bindtap="onButtonTap" data-id="right">
+        <text class="action-text">→</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 游戏状态遮罩 -->
+  <view class="game-overlay" wx:if="{{!gameStarted && !gameOver}}">
+    <view class="overlay-content">
+      <text class="overlay-title">俄罗斯方块</text>
+      <text class="overlay-subtitle">修复版</text>
+      <text class="overlay-desc">点击屏幕开始游戏</text>
+    </view>
+  </view>
+  
+  <view class="game-overlay" wx:if="{{gamePaused}}">
+    <view class="overlay-content">
+      <text class="overlay-title">游戏暂停</text>
+      <text class="overlay-desc">点击屏幕继续游戏</text>
+    </view>
+  </view>
+  
+  <view class="game-overlay" wx:if="{{gameOver}}">
+    <view class="overlay-content">
+      <text class="overlay-title">游戏结束</text>
+      <text class="overlay-score">最终分数: {{score}}</text>
+      <text class="overlay-desc">点击屏幕重新开始</text>
+    </view>
+  </view>
+</view>
